@@ -15,15 +15,15 @@
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+import chalk from "chalk";
+import { spawn, spawnSync } from "child_process";
 import * as fs from "fs";
-import * as Path from "path";
 import * as os from "os";
+import * as Path from "path";
+import { exit } from "process";
 import Config from "../Config/Config";
 import Util from "../Utils/Util";
 import { buildLaunchCommand } from './BuildLaunchCommand';
-import chalk from "chalk";
-import { spawn, spawnSync } from "child_process";
-import { exit } from "process";
 
 export default class SourceFileCreator {
   // The flag determines whether to open the file right after creating it, or not
@@ -91,13 +91,6 @@ export default class SourceFileCreator {
     const filename = Util.normalizeFileName(Path.basename(filePath));
     filePath = Path.join(Path.dirname(filePath), filename);
     let template = "";
-    const commentString = Util.getCommentString(langExtension, config);
-    if (commentString) {
-      template += `${commentString} time-limit: ${timeLimitInMS}\n`;
-      if (problemUrl) {
-        template += `${commentString} problem-url: ${problemUrl}\n`;
-      }
-    }
     const langConfig = config.languages[langExtension];
     if (langConfig?.template) {
       template += fs.readFileSync(langConfig.template).toString();
