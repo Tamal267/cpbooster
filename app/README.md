@@ -63,6 +63,24 @@
 4. Install `cpbooster` from source: `npm run install:dev`
 5. Make code changes
 
+## Vim Setup
+1. Install `vim.plug` (for `Ubuntu`)
+```bash
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+"     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
+2. Add these lines in `~/.vimrc`, then `:x` to save and exit
+```vimrc
+call plug#begin()
+
+Plug 'searleser97/cpbooster.vim'
+
+call plug#end()
+```
+3. Re-enter `~/.vimrc` and `:PlugInstall` to install plugin.
+4. Add `autocmd FileType cpp map <F5> :Test<CR>` in `.vimrc`
+5. Enter the templete path in `~/cpbooster-config.json`
+
 ### Before making a Pull Request
 
 1. Lint your code and fix possible linting errors: `npm run lint`
