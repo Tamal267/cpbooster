@@ -67,7 +67,7 @@
 1. Install `vim.plug` (for `Ubuntu`)
 ```bash
 curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-"     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 2. Add these lines in `~/.vimrc`, then `:x` to save and exit
 ```vimrc
