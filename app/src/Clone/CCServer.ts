@@ -16,18 +16,18 @@
     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import chalk from "chalk";
+import { spawn, spawnSync } from "child_process";
 import express from "express";
 import * as fs from "fs";
 import * as Path from "path";
-import ProblemData from "../Types/ProblemData";
-import Config from "../Config/Config";
 import { exit } from "process";
-import { spawn, spawnSync } from "child_process";
-import Util from "../Utils/Util";
+import Config from "../Config/Config";
 import SourceFileCreator from "../Create/SourceFileCreator";
-import { getEditorCommand } from "./EditorCommandBuilder";
-import chalk from "chalk";
 import Tester from "../Test/TesterFactory/Tester";
+import ProblemData from "../Types/ProblemData";
+import Util from "../Utils/Util";
+import { getEditorCommand } from "./EditorCommandBuilder";
 
 /* Competitive Companion Server */
 export default class CCServer {
@@ -48,29 +48,26 @@ export default class CCServer {
       const problemData: ProblemData = request.body;
       problemData.name = Util.normalizeFileName(problemData.name);
       problemData.group = Util.normalizeFileName(problemData.group);
-      this.contestName = problemData.group;
-      this.contestPath = Util.getContestPath(this.contestName, this.config);
-      if (!fs.existsSync(this.contestPath)) fs.mkdirSync(this.contestPath, { recursive: true });
-      const FilesPathNoExtension = `${Path.join(this.contestPath, problemData.name)}`;
       if (this.config.createContestPlatformDirectory) {
-        let [platform, contestName] = problemData.group.split("-").map((str) => str.trim());
+        const [platform, contestName] = problemData.group.split("-").map((str) => str.trim());
         this.platform = platform;
         // removes platform name from contest name
-        contestName = contestName.replace(new RegExp(this.platform, 'g'), "");
-        contestName = Util.normalizeFileName(contestName);
+        let cleanedContestName = contestName.replace(new RegExp(this.platform, "g"), "");
+        cleanedContestName = Util.normalizeFileName(cleanedContestName);
         // removes extra dots
-        this.contestName = contestName.replace(/\./g, "");
+        this.contestName = cleanedContestName.replace(/\./g, "");
       } else {
         problemData.group = Util.normalizeFileName(problemData.group);
         this.contestName = problemData.group;
       }
-      
+
       const contestPath = config.cloneInCurrentDir
         ? this.contestName
         : this.config.createContestPlatformDirectory
-		  ? Path.join(this.config.contestsDirectory, this.platform, this.contestName)
-		  : Path.join(this.config.contestsDirectory, problemData.group);
+        ? Path.join(this.config.contestsDirectory, this.platform, this.contestName)
+        : Path.join(this.config.contestsDirectory, problemData.group);
       if (!fs.existsSync(contestPath)) fs.mkdirSync(contestPath, { recursive: true });
+      this.contestPath = contestPath;
       const FilesPathNoExtension = `${Path.join(contestPath, problemData.name)}`;
       const extension = `.${config.preferredLang}`;
       const filePath = `${FilesPathNoExtension}${extension}`;
@@ -104,11 +101,6 @@ export default class CCServer {
       if (elapsedTime >= tolerance) {
         if (serverRef) serverRef.close();
         clearInterval(interval);
-        const contestPath = this.config.cloneInCurrentDir
-          ? this.contestName
-		  : this.config.createContestPlatformDirectory
-			? Path.join(this.config.contestsDirectory, this.platform, this.contestName)
-			: Path.join(this.config.contestsDirectory, this.contestName);
         console.log("\n\t    DONE!\n");
         console.log(`The path to your contest folder is: "${this.contestPath}"`);
         console.log("\n\tHappy Coding!\n");
@@ -135,4 +127,4 @@ export default class CCServer {
       }
     }, 100);
   }
-} 
+}
