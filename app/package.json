@@ -22,7 +22,7 @@
     "start": "npm run build && node dist/index.js test -h",
     "start:dev": "nodemon",
     "build": "rimraf ./dist && ttsc",
-    "install:dev": "npm run build && npm uninstall cpbooster -g && npm install -g",
+    "install:dev": "npm run build && chmod +x dist/src/index.js && npm uninstall cpbooster -g && npm install -g",
     "test": "jest",
     "lint": "eslint . --ext .ts",
     "lint-and-fix": "eslint . --ext .ts --fix",

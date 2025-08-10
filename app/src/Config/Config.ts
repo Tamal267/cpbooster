@@ -17,11 +17,11 @@
  */
 
 import * as fs from "fs";
-import * as Path from "path";
 import * as os from "os";
+import * as Path from "path";
 import { exit } from "process";
-import { LangConfig } from "./Types/LangConfig";
 import Util from "../Utils/Util";
+import { LangConfig } from "./Types/LangConfig";
 
 export default class Config {
   static readonly defaultConfigFilePaths = [
@@ -45,6 +45,8 @@ export default class Config {
   cloneInCurrentDir: boolean;
   groupContestsByJudge: boolean;
   executableFileExtension: string;
+  copyDebugFile: boolean;
+  debugFilePath: string;
   // config for language extension
   languages: Record<string, LangConfig | undefined>;
 
@@ -55,13 +57,15 @@ export default class Config {
     this.closeAfterClone = false;
     this.showStatusPageOnSubmit = true;
     this.useUserDefaultBrowser = true;
-    this.createContestPlatformDirectory = true;
+    this.createContestPlatformDirectory = false;
     this.preferredLang = "cpp";
     this.hideTestCaseInput = false;
     this.maxLinesToShowFromInput = 50;
     this.cloneInCurrentDir = false;
     this.groupContestsByJudge = false;
     this.executableFileExtension = "exe";
+    this.copyDebugFile = false;
+    this.debugFilePath = "mydebug.h";
     this.languages = {
       cpp: {
         template: "",
@@ -228,6 +232,7 @@ export default class Config {
           config.editor = config.terminal;
         }
         config.contestsDirectory = Util.replaceTildeWithAbsoluteHomePath(config.contestsDirectory);
+        config.debugFilePath = Util.replaceTildeWithAbsoluteHomePath(config.debugFilePath);
         for (const langConfig of Object.values(config.languages)) {
           if (langConfig) {
             langConfig.template = Util.replaceTildeWithAbsoluteHomePath(langConfig.template);

@@ -79,9 +79,31 @@ export default class CCServer {
       const tcLen = problemData.tests.length;
       console.log(`-> ${problemData.tests.length} Testcase${tcLen == 1 ? "" : "s"}`);
       console.log("-------------");
+
+      // Copy debug file if enabled
+      this.copyDebugFileIfEnabled(contestPath);
+
       if (!this.isActive) this.isActive = true;
       this.lastRequestTime = process.hrtime();
     });
+  }
+
+  private copyDebugFileIfEnabled(contestPath: string): void {
+    if (!this.config.copyDebugFile) return;
+
+    const debugFilePath = this.config.debugFilePath;
+    if (!fs.existsSync(debugFilePath)) {
+      console.log(chalk.yellow(`Debug file not found at: ${debugFilePath}`));
+      return;
+    }
+
+    const targetPath = Path.join(contestPath, Path.basename(debugFilePath));
+    try {
+      fs.copyFileSync(debugFilePath, targetPath);
+      console.log(`Debug file copied: ${Path.basename(debugFilePath)}`);
+    } catch (error) {
+      console.log(chalk.red(`Failed to copy debug file: ${error}`));
+    }
   }
 
   run(): void {
