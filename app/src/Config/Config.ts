@@ -51,11 +51,11 @@ export default class Config {
   languages: Record<string, LangConfig | undefined>;
 
   constructor() {
-    this.contestsDirectory = Path.join(os.homedir(), "Contests");
+    this.contestsDirectory = Path.join(os.homedir(), "ccode");
     this.port = 1327;
-    this.editor = "konsole";
+    this.editor = "code";
     this.closeAfterClone = false;
-    this.showStatusPageOnSubmit = true;
+    this.showStatusPageOnSubmit = false;
     this.useUserDefaultBrowser = true;
     this.createContestPlatformDirectory = false;
     this.preferredLang = "cpp";
@@ -64,13 +64,13 @@ export default class Config {
     this.cloneInCurrentDir = false;
     this.groupContestsByJudge = false;
     this.executableFileExtension = "exe";
-    this.copyDebugFile = false;
-    this.debugFilePath = "mydebug.h";
+    this.copyDebugFile = true;
+    this.debugFilePath = Path.join(os.homedir(), "ccode", "mydebug.h");
     this.languages = {
       cpp: {
-        template: "",
+        template: Path.join(os.homedir(), "ccode", "algo", "temp.cc"),
         command: "g++ -std=gnu++17 -O2",
-        debugCommand: "g++ -std=gnu++17 -DDEBUG -Wshadow -Wall",
+        debugCommand: "g++ -std=gnu++17 -DONPC -Wshadow -Wall",
         aliases: {
           codeforces: "54",
           ucup: "C++23",
